@@ -13,4 +13,7 @@
     <string name="title_main_menu">Bienvenue sur votre App My Curling !</string>
     <string name="menu_matchs">Mes derniers Matchs</string>
     <string name="menu_stats">Mes statistiques</string>
+    <string name="main_menu">Acceuil</string>
+    <string name="title_activity_add_match">add_match</string>
+    <string name="add_menu_title">Mon Match</string>
 </resources>
