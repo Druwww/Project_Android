@@ -10,6 +10,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
@@ -43,14 +44,41 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.menu_add) {
-            Log.d(LOG_TAG, "Button clicked!");
-
             Intent intent = new Intent(this, add_match.class);
-
+            startActivity(intent);
+            return true;
+        }else if(id == R.id.menu_matchs){
+            Intent intent = new Intent(this, view_matchs.class);
+            startActivity(intent);
+            return true;
+        } else if(id == R.id.menu_stats){
+            Intent intent = new Intent(this, view_stats.class);
             startActivity(intent);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    public void launchAddMatch(View view){
+        //Creation du intent pour la nouvelle activité
+        Intent intent = new Intent(this, add_match.class);
+        //creation de la nouvelle activité
+        startActivity(intent);
+    }
+
+    public void launchViewMatchs(View view){
+        //Creation du intent pour la nouvelle activité
+        Intent intent = new Intent(this, add_match.class);
+        //creation de la nouvelle activité
+        startActivity(intent);
+    }
+
+    public void launchViewStats(View view){
+        //Creation du intent pour la nouvelle activité
+        Intent intent = new Intent(this, view_stats.class);
+        //creation de la nouvelle activité
+        startActivity(intent);
     }
 }

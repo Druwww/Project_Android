@@ -3,9 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="fr.android.quentin.my_curling_app.MainActivity">
     <item
-        android:id="@+id/main_menu"
-        android:title="@string/main_menu" />
-    <item
         android:id="@+id/menu_add"
         android:title="@string/menu_add" />
     <item

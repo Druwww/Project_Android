@@ -13,15 +13,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-public class add_match extends AppCompatActivity {
+public class view_matchs extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_match);
-
+        setContentView(R.layout.activity_view_matchs);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
     }
 
     @Override

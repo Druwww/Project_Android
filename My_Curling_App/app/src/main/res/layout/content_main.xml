@@ -27,6 +27,7 @@
             android:id="@+id/button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:onClick="launchAddMatch"
             android:text="@string/menu_add"
             android:textSize="24sp" />
 
@@ -34,6 +35,7 @@
             android:id="@+id/button2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:onClick="launchViewMatchs"
             android:text="@string/menu_matchs"
             android:textSize="24sp" />
 
@@ -41,6 +43,7 @@
             android:id="@+id/button3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:onClick="launchViewStats"
             android:text="@string/menu_stats"
             android:textSize="24sp" />
     </LinearLayout>

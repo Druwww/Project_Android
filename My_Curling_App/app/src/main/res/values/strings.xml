@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">My_Curling_App</string>
+    <string name="app_name">Mon application Curling</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
@@ -14,6 +14,10 @@
     <string name="menu_matchs">Mes derniers Matchs</string>
     <string name="menu_stats">Mes statistiques</string>
     <string name="main_menu">Acceuil</string>
-    <string name="title_activity_add_match">add_match</string>
+    <string name="title_activity_add_match">Ajouter un Match</string>
     <string name="add_menu_title">Mon Match</string>
+    <string name="title_activity_view_matchs">Mes derniers Matchs</string>
+    <string name="views_matchs_title">Mes derniers Matchs</string>
+    <string name="title_activity_view_stats">Mes statistiques</string>
+    <string name="view_stats_title">Mes statistiques</string>
 </resources>
