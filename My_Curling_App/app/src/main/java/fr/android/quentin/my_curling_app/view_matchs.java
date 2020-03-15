@@ -86,8 +86,8 @@ public class view_matchs extends AppCompatActivity {
         };
 
 // Filter results WHERE "title" = 'My Title'
-        String selection = managerSQLI.FeedEntry.COLUMN_NAME_MATCH_NAME + " = ?";
-        String[] selectionArgs = { "" };
+        String selection ="";
+        String[] selectionArgs = {};
 
 // How you want the results sorted in the resulting Cursor
         String sortOrder =
