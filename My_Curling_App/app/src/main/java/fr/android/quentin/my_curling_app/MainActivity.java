@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void launchViewMatchs(View view){
         //Creation du intent pour la nouvelle activité
-        Intent intent = new Intent(this, add_match.class);
+        Intent intent = new Intent(this, view_matchs.class);
         //creation de la nouvelle activité
         startActivity(intent);
     }

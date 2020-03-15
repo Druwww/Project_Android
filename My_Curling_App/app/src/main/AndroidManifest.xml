@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="fr.android.quentin.my_curling_app">
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-feature android:name="android.hardware.camera" android:required="true" />
+
+
+
 
     <application
         android:allowBackup="true"
@@ -10,6 +16,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <!-- "android:noHistory="true" " will close the activity if we launch another one -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
         <activity
             android:name=".view_stats"
             android:label="@string/title_activity_view_stats"
@@ -27,8 +42,6 @@
         <activity
             android:name=".add_match"
             android:label="@string/title_activity_add_match"
-            android:noHistory="true"
-            android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity

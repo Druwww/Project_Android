@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Mon application Curling</string>
+    <string name="app_name" translatable="false">Mon application Curling</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
@@ -20,4 +20,18 @@
     <string name="views_matchs_title">Mes derniers Matchs</string>
     <string name="title_activity_view_stats">Mes statistiques</string>
     <string name="view_stats_title">Mes statistiques</string>
+    <string name="add_match_field_name">Nom :</string>
+    <string name="add_match_field_date">"Date : "</string>
+    <string name="add_match_field_time">"Heure :"</string>
+    <string name="add_match_field_victory">Victoire</string>
+    <string name="add_match_field_draw">Nul</string>
+    <string name="add_match_field_loose">Perdu</string>
+    <string name="add_match_picture">Photo du Match :</string>
+    <string name="add_macth_nutton_gallery">Telephone</string>
+    <string name="add_match_button_camera">Appareil Photo</string>
+    <string name="add_match_field_Score">Les manches</string>
+    <string name="add_match_field_home">Vous :</string>
+    <string name="add_match_filed_ext">Adversaire :</string>
+    <string name="button_add">+</string>
+    <string name="add_match_button_add">Ajouter le match</string>
 </resources>
