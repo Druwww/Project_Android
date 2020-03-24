@@ -3,6 +3,8 @@ package fr.android.quentin.my_curling_app;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -132,13 +134,11 @@ public class view_matchs extends AppCompatActivity {
                 finalTextMatch += "\nResultat : Defaite";
             }
 
-            String matchPhoto = cursor.getString(
-                    cursor.getColumnIndexOrThrow(managerSQLI.FeedEntry.COLUMN_NAME_MATCH_PICTURE));
-
-            //finalTextMatch += "\nPhoto : " + matchPhoto + "\n\n\n";
+            byte[] img  = cursor.getBlob(cursor.getColumnIndexOrThrow(managerSQLI.FeedEntry.COLUMN_NAME_MATCH_PICTURE));
 
             ImageView my_image = new ImageView(this);
-            my_image.setImageURI(Uri.parse(matchPhoto));
+            Bitmap matchPhoto = BitmapFactory.decodeByteArray(img, 0, img.length);
+            my_image.setImageBitmap(matchPhoto);
 
             TextView newScore = new TextView(this);
             newScore.setText(finalTextMatch);

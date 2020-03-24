@@ -1,10 +1,14 @@
 package fr.android.quentin.my_curling_app;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -13,6 +17,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
 import android.os.Environment;
@@ -28,7 +33,9 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -48,6 +55,12 @@ public class add_match extends AppCompatActivity {
     private static final int GALLERY_REQUEST_CODE = 20;
     private static final int REQUEST_IMAGE_CAPTURE = 30;
 
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+
     private String currentPhotoPath;
 
     private ArrayList<Integer> myScores;
@@ -65,6 +78,8 @@ public class add_match extends AppCompatActivity {
         myScores = new ArrayList<Integer>();;
         currentPhotoPath = "";
         myBDD = new FeedReaderDbHelper(getApplicationContext());
+
+        verifyStoragePermissions(this);
     }
 
     @Override
@@ -111,20 +126,42 @@ public class add_match extends AppCompatActivity {
         startActivityForResult(intent, GALLERY_REQUEST_CODE);
     }
 
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
+    public static void verifyStoragePermissions(Activity activity) {
+        // Check if we have write permission
+        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
-        // Save a file: path for use with ACTION_VIEW intents
-        currentPhotoPath = image.getAbsolutePath();
-        return image;
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+        }
+    }
+
+    private String saveImage(Bitmap finalBitmap, String image_name) {
+
+        String root = Environment.getExternalStorageDirectory().toString();
+        File myDir = new File(root);
+        myDir.mkdirs();
+        String fname = "Image-" + image_name + ".jpg";
+        File file = new File((this
+                .getApplicationContext().getFileStreamPath(fname)
+                .getPath()));
+        if (file.exists()) file.delete();
+        try {
+
+            FileOutputStream out = new FileOutputStream(file);
+            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            out.flush();
+            out.close();
+            return root + fname;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return "";
     }
 
     public void captureFromCamera(View view) {
@@ -214,10 +251,18 @@ public class add_match extends AppCompatActivity {
             return;
         }
 
-        if(currentPhotoPath.equals("")){
+        byte[] img;
+
+        if(currentPhotoPath.equals("")) {
             errorPopUp = Snackbar.make(view, "Please enter a match Picture", 3000);
             errorPopUp.show();
             return;
+        }else{
+            ImageView myImg = findViewById(R.id.match_picture);
+            Bitmap b = ((BitmapDrawable)myImg.getDrawable()).getBitmap();
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            b.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+            img = bos.toByteArray();
         }
 
         //1 victory, 2 draw, 3 defeat
@@ -251,7 +296,7 @@ public class add_match extends AppCompatActivity {
         values.put(managerSQLI.FeedEntry.COLUMN_NAME_MATCH_DATE, myMatchDate.getText().toString());
         values.put(managerSQLI.FeedEntry.COLUMN_NAME_MATCH_TIME, myMatchTime.getText().toString());
         values.put(managerSQLI.FeedEntry.COLUMN_NAME_MATCH_STATUS, Integer.toString(statusMatch));
-        values.put(managerSQLI.FeedEntry.COLUMN_NAME_MATCH_PICTURE, currentPhotoPath);
+        values.put(managerSQLI.FeedEntry.COLUMN_NAME_MATCH_PICTURE, img);
         values.put(managerSQLI.FeedEntry.COLUMN_NAME_MATCH_SCORE, "test");
 
 
@@ -260,4 +305,5 @@ public class add_match extends AppCompatActivity {
         errorPopUp = Snackbar.make(view, "Match Ajouté ! : " + newRowId, 3000);
         errorPopUp.show();
     }
+
 }
