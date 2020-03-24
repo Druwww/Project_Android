@@ -1,28 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Mon application Curling</string>
-    <string name="action_settings">Settings</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
-
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="menu_add">Ajouter un Match</string>
     <string name="title_main_menu">Bienvenue sur votre App My Curling !</string>
     <string name="menu_matchs">Mes derniers Matchs</string>
     <string name="menu_stats">Mes statistiques</string>
     <string name="main_menu">Acceuil</string>
     <string name="title_activity_add_match">Ajouter un Match</string>
-    <string name="add_menu_title">Mon Match</string>
+    <string name="add_menu_title">Mon nouveau Match</string>
     <string name="title_activity_view_matchs">Mes derniers Matchs</string>
     <string name="views_matchs_title">Mes derniers Matchs</string>
     <string name="title_activity_view_stats">Mes statistiques</string>
     <string name="view_stats_title">Mes statistiques</string>
     <string name="add_match_field_name">Nom :</string>
     <string name="add_match_field_date">"Date : "</string>
-    <string name="add_match_field_time">"Heure :"</string>
+    <string name="add_match_field_time">Heure :</string>
     <string name="add_match_field_victory">Victoire</string>
     <string name="add_match_field_draw">Nul</string>
     <string name="add_match_field_loose">Perdu</string>
@@ -32,7 +24,6 @@
     <string name="add_match_field_Score">Les manches</string>
     <string name="add_match_field_home">Vous :</string>
     <string name="add_match_filed_ext">Adversaire :</string>
-    <string name="button_add" translatable="false">+</string>
     <string name="add_match_button_add">Ajouter le match</string>
     <string name="view_matchs_button_refreshLastMatchs">Rafraichir</string>
     <string name="view_matchs_button_erraseDataBase">Effacer les matchs</string>

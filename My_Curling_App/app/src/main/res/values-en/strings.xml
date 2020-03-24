@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">My Curling App</string>
+    <string name="action_settings">Settings</string>
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="menu_add">Add a Match</string>
+    <string name="title_main_menu">Welcom on your Curling App !</string>
+    <string name="menu_matchs">My last Matchs</string>
+    <string name="menu_stats">My statistics</string>
+    <string name="main_menu">Main</string>
+    <string name="title_activity_add_match">Add a Match</string>
+    <string name="add_menu_title">My new Match</string>
+    <string name="title_activity_view_matchs">My Last Matchs</string>
+    <string name="views_matchs_title">My Last Matchs</string>
+    <string name="title_activity_view_stats">My statistics</string>
+    <string name="view_stats_title">My statistics</string>
+    <string name="add_match_field_name">Name :</string>
+    <string name="add_match_field_date">Date :</string>
+    <string name="add_match_field_time">Time :</string>
+    <string name="add_match_field_victory">Victory</string>
+    <string name="add_match_field_draw">Draw</string>
+    <string name="add_match_field_loose">Lose</string>
+    <string name="add_match_picture">Picture of the Match</string>
+    <string name="add_macth_nutton_gallery">My Phone</string>
+    <string name="add_match_button_camera">My Camera</string>
+    <string name="add_match_field_Score">Rounds</string>
+    <string name="add_match_field_home">Home :</string>
+    <string name="add_match_filed_ext">Ext :</string>
+    <string name="add_match_button_add">Add the Match</string>
+    <string name="view_matchs_button_refreshLastMatchs">Refresh</string>
+    <string name="view_matchs_button_erraseDataBase">Erase Matchs</string>
+</resources>
