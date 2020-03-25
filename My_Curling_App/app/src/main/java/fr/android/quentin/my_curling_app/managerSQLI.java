@@ -27,7 +27,7 @@ public final class managerSQLI  {
                     FeedEntry.COLUMN_NAME_MATCH_TIME + " TEXT," +
                     FeedEntry.COLUMN_NAME_MATCH_STATUS + " NUMBER," +
                     FeedEntry.COLUMN_NAME_MATCH_PICTURE + " BLOB," +
-                    FeedEntry.COLUMN_NAME_MATCH_SCORE + " TEXT)";
+                    FeedEntry.COLUMN_NAME_MATCH_SCORE + " BLOB)";
 
     private static final String SQL_DELETE_ENTRIES =
 
@@ -35,7 +35,7 @@ public final class managerSQLI  {
 
     public static class FeedReaderDbHelper extends SQLiteOpenHelper {
         // If you change the database schema, you must increment the database version.
-        public static final int DATABASE_VERSION = 2;
+        public static final int DATABASE_VERSION = 3;
         public static final String DATABASE_NAME = "FeedReader.db";
 
         public FeedReaderDbHelper(Context context) {
