@@ -37,11 +37,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import fr.android.quentin.my_curling_app.managerSQLI.FeedReaderDbHelper;
@@ -63,7 +66,7 @@ public class add_match extends AppCompatActivity {
 
     private String currentPhotoPath;
 
-    private ArrayList<Integer> myScores;
+    private List<Integer> myScores;
 
     private FeedReaderDbHelper myBDD;
 
@@ -288,6 +291,16 @@ public class add_match extends AppCompatActivity {
             return;
         }
 
+        //Convertie nos scores en chaine de byte
+        int[]myB = new int[myScores.size()];
+        for(int i =0; i < myScores.size(); i++){
+            myB[i] = myScores.get(i);
+        }
+        ByteBuffer byteBuffer = ByteBuffer.allocate(myScores.size()*4);
+        IntBuffer intBuffer = byteBuffer.asIntBuffer();
+        intBuffer.put(myB);
+        byte[] arrayByte = byteBuffer.array();
+
         SQLiteDatabase db = myBDD.getWritableDatabase();
 
 // Create a new map of values, where column names are the keys
@@ -297,7 +310,7 @@ public class add_match extends AppCompatActivity {
         values.put(managerSQLI.FeedEntry.COLUMN_NAME_MATCH_TIME, myMatchTime.getText().toString());
         values.put(managerSQLI.FeedEntry.COLUMN_NAME_MATCH_STATUS, Integer.toString(statusMatch));
         values.put(managerSQLI.FeedEntry.COLUMN_NAME_MATCH_PICTURE, img);
-        values.put(managerSQLI.FeedEntry.COLUMN_NAME_MATCH_SCORE, "test");
+        values.put(managerSQLI.FeedEntry.COLUMN_NAME_MATCH_SCORE, arrayByte);
 
 
 // Insert the new row, returning the primary key value of the new row

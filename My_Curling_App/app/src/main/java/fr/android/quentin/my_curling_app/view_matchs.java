@@ -22,7 +22,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.io.DataInputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class view_matchs extends AppCompatActivity {
@@ -140,13 +142,31 @@ public class view_matchs extends AppCompatActivity {
             Bitmap matchPhoto = BitmapFactory.decodeByteArray(img, 0, img.length);
             my_image.setImageBitmap(matchPhoto);
 
+
+            byte[] scores = cursor.getBlob(
+                    cursor.getColumnIndexOrThrow(managerSQLI.FeedEntry.COLUMN_NAME_MATCH_SCORE));
+
+            ArrayList<Integer> intScores = new ArrayList<Integer>();
+            int b = 0;
+            for(int i = 0;i < scores.length ;i+= 4){
+                byte[] lotOfBytes = new byte[4];
+                intScores.add(scores[i] * 1000 +  scores[i+1] * 100 + scores[i+2] * 10 + scores[i+3]);
+                b++;
+            }
+
+            finalTextMatch +="\n\nScores : ";
+            for(int i = 0;i < intScores.size() / 2 ;i += 2){
+                finalTextMatch += "\nManche " + ((i / 2 )+ 1) + " : Home : " + intScores.get(i) + " - " + intScores.get(i+1) + " Ext";
+            }
+            finalTextMatch += "\n\n";
+
+            //affichage final
             TextView newScore = new TextView(this);
             newScore.setText(finalTextMatch);
             layoutMatchs.addView(newScore);
             layoutMatchs.addView(my_image);
             my_image.getLayoutParams().height = 500;
             my_image.getLayoutParams().width = 500;
-            //my_image.requestLayout();
         }
         cursor.close();
     }
