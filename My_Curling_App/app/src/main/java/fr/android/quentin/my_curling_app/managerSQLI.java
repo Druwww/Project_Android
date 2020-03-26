@@ -17,6 +17,7 @@ public final class managerSQLI  {
         public static final String COLUMN_NAME_MATCH_STATUS = "status";
         public static final String COLUMN_NAME_MATCH_PICTURE = "picture";
         public static final String COLUMN_NAME_MATCH_SCORE = "score";
+        public static final String COLUMN_NAME_MATCH_POSITION = "position";
     }
 
     private static final String SQL_CREATE_ENTRIES =
@@ -27,6 +28,7 @@ public final class managerSQLI  {
                     FeedEntry.COLUMN_NAME_MATCH_TIME + " TEXT," +
                     FeedEntry.COLUMN_NAME_MATCH_STATUS + " NUMBER," +
                     FeedEntry.COLUMN_NAME_MATCH_PICTURE + " BLOB," +
+                    FeedEntry.COLUMN_NAME_MATCH_POSITION + " TEXT," +
                     FeedEntry.COLUMN_NAME_MATCH_SCORE + " BLOB)";
 
     private static final String SQL_DELETE_ENTRIES =
@@ -35,7 +37,7 @@ public final class managerSQLI  {
 
     public static class FeedReaderDbHelper extends SQLiteOpenHelper {
         // If you change the database schema, you must increment the database version.
-        public static final int DATABASE_VERSION = 3;
+        public static final int DATABASE_VERSION = 5;
         public static final String DATABASE_NAME = "FeedReader.db";
 
         public FeedReaderDbHelper(Context context) {

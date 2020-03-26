@@ -9,6 +9,10 @@ import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -32,6 +36,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -53,7 +58,7 @@ import static java.security.AccessController.getContext;
 
 
 //Documentation : https://androidclarified.com/pick-image-gallery-camera-android/
-public class add_match extends AppCompatActivity {
+public class add_match extends AppCompatActivity implements LocationListener {
 
     private static final int GALLERY_REQUEST_CODE = 20;
     private static final int REQUEST_IMAGE_CAPTURE = 30;
@@ -70,6 +75,13 @@ public class add_match extends AppCompatActivity {
 
     private FeedReaderDbHelper myBDD;
 
+    private LocationManager locationManager;
+
+    private String provider;
+
+    private double longitude;
+    private double latitude;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,12 +90,86 @@ public class add_match extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        myScores = new ArrayList<Integer>();;
+        myScores = new ArrayList<Integer>();
+        ;
         currentPhotoPath = "";
         myBDD = new FeedReaderDbHelper(getApplicationContext());
 
         verifyStoragePermissions(this);
+
+        // Get the location manager
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        // Define the criteria how to select the location provider -> use
+        // default
+        Criteria criteria = new Criteria();
+        provider = locationManager.getBestProvider(criteria, false);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        Location location = locationManager.getLastKnownLocation(provider);
+
+        // Initialize the location fields
+        if (location != null) {
+            System.out.println("Provider " + provider + " has been selected.");
+            onLocationChanged(location);
+        } else {
+            longitude = 0;
+            latitude = 0;
+        }
+
+
     }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        double lat = location.getLatitude();
+        double lng =  location.getLongitude();
+        latitude = lat;
+        longitude = lng;
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+        Toast.makeText(this, "Enabled new provider " + provider,
+                Toast.LENGTH_SHORT).show();
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+        Toast.makeText(this, "Disabled provider " + provider,
+                Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        locationManager.requestLocationUpdates(provider, 400, 1, (LocationListener) this);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -264,7 +350,7 @@ public class add_match extends AppCompatActivity {
             ImageView myImg = findViewById(R.id.match_picture);
             Bitmap b = ((BitmapDrawable)myImg.getDrawable()).getBitmap();
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            b.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+            b.compress(Bitmap.CompressFormat.JPEG, 25, bos);
             img = bos.toByteArray();
         }
 
@@ -291,6 +377,12 @@ public class add_match extends AppCompatActivity {
             return;
         }
 
+        if(longitude == 0 && latitude == 0){
+            errorPopUp = Snackbar.make(view, "Please enable localisation", 3000);
+            errorPopUp.show();
+            return;
+        }
+
         //Convertie nos scores en chaine de byte
         int[]myB = new int[myScores.size()];
         for(int i =0; i < myScores.size(); i++){
@@ -311,6 +403,7 @@ public class add_match extends AppCompatActivity {
         values.put(managerSQLI.FeedEntry.COLUMN_NAME_MATCH_STATUS, Integer.toString(statusMatch));
         values.put(managerSQLI.FeedEntry.COLUMN_NAME_MATCH_PICTURE, img);
         values.put(managerSQLI.FeedEntry.COLUMN_NAME_MATCH_SCORE, arrayByte);
+        values.put(managerSQLI.FeedEntry.COLUMN_NAME_MATCH_POSITION, (String.valueOf(latitude) + "/" + String.valueOf(longitude)));
 
 
 // Insert the new row, returning the primary key value of the new row

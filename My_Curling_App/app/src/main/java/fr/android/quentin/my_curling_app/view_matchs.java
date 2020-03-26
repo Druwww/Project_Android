@@ -86,7 +86,8 @@ public class view_matchs extends AppCompatActivity {
                 managerSQLI.FeedEntry.COLUMN_NAME_MATCH_TIME,
                 managerSQLI.FeedEntry.COLUMN_NAME_MATCH_STATUS,
                 managerSQLI.FeedEntry.COLUMN_NAME_MATCH_PICTURE,
-                managerSQLI.FeedEntry.COLUMN_NAME_MATCH_SCORE
+                managerSQLI.FeedEntry.COLUMN_NAME_MATCH_SCORE,
+                managerSQLI.FeedEntry.COLUMN_NAME_MATCH_POSITION
         };
 
 // Filter results WHERE "title" = 'My Title'
@@ -123,7 +124,10 @@ public class view_matchs extends AppCompatActivity {
             String matchTime = cursor.getString(
                     cursor.getColumnIndexOrThrow(managerSQLI.FeedEntry.COLUMN_NAME_MATCH_TIME));
 
-            String finalTextMatch = "Name : " + matchName + "\nDate : " + matchDate + "\nHeure : " + matchTime;
+            String position = cursor.getString(
+                    cursor.getColumnIndexOrThrow(managerSQLI.FeedEntry.COLUMN_NAME_MATCH_POSITION));
+
+            String finalTextMatch = "Name : " + matchName + "\nDate : " + matchDate + "\nHeure : " + matchTime + "\nPosition : " + position ;
 
             String matchStatus = cursor.getString(
                     cursor.getColumnIndexOrThrow(managerSQLI.FeedEntry.COLUMN_NAME_MATCH_STATUS));
