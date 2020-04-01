@@ -5,9 +5,11 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Criteria;
 import android.location.Location;
@@ -71,7 +73,7 @@ public class add_match extends AppCompatActivity implements LocationListener {
 
     private String currentPhotoPath;
 
-    private List<Integer> myScores;
+    private ArrayList<Integer> myScores;
 
     private FeedReaderDbHelper myBDD;
 
@@ -81,6 +83,7 @@ public class add_match extends AppCompatActivity implements LocationListener {
 
     private double longitude;
     private double latitude;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,7 +126,116 @@ public class add_match extends AppCompatActivity implements LocationListener {
             longitude = 0;
             latitude = 0;
         }
+    }
 
+
+
+//Use onSaveInstanceState(Bundle) and onRestoreInstanceState
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+
+        // Save UI state changes to the savedInstanceState.
+        // This bundle will be passed to onCreate if the process is
+        // killed and restarted.
+
+        EditText myMatchName = findViewById(R.id.match_name);
+        EditText myMatchDate = findViewById(R.id.match_date);
+        EditText myMatchTime = findViewById(R.id.match_time);
+
+        byte[] img;
+
+        if(currentPhotoPath.equals("")) {
+            img = new byte[0];
+        }else{
+            ImageView myImg = findViewById(R.id.match_picture);
+            Bitmap b = ((BitmapDrawable)myImg.getDrawable()).getBitmap();
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            b.compress(Bitmap.CompressFormat.JPEG, 25, bos);
+            img = bos.toByteArray();
+        }
+
+        //1 victory, 2 draw, 3 defeat
+        int statusMatch = 0;
+        RadioGroup myMatchStatus = findViewById(R.id.match_radio_group);
+        RadioButton radioVictory = findViewById(R.id.match_victory);
+        RadioButton radioDraw = findViewById(R.id.match_draw);
+        RadioButton radioDefeat = findViewById(R.id.match_defeat);
+        int selectedStatus = myMatchStatus.getCheckedRadioButtonId();
+        if(selectedStatus == radioVictory.getId()){
+            statusMatch = 1;
+        }else if (selectedStatus == radioDraw.getId()){
+            statusMatch = 2;
+        }else if (selectedStatus == radioDefeat.getId()){
+            statusMatch = 3;
+        }
+
+        savedInstanceState.putString("match_name", myMatchName.getText().toString());
+        savedInstanceState.putString("match_date", myMatchDate.getText().toString());
+        savedInstanceState.putString("match_time", myMatchTime.getText().toString());
+        savedInstanceState.putByteArray("match_picture", img);
+        savedInstanceState.putInt("match_status", statusMatch);
+        savedInstanceState.putIntegerArrayList("match_score", myScores);
+
+
+
+        // etc.
+
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+//onRestoreInstanceState
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+
+        super.onRestoreInstanceState(savedInstanceState);
+
+        EditText myMatchName = findViewById(R.id.match_name);
+        EditText myMatchDate = findViewById(R.id.match_date);
+        EditText myMatchTime = findViewById(R.id.match_time);
+
+        // Restore UI state from the savedInstanceState.
+        // This bundle has also been passed to onCreate.
+
+        myMatchName.setText(savedInstanceState.getString("match_name"));
+        myMatchDate.setText(savedInstanceState.getString("match_date"));
+        myMatchTime.setText(savedInstanceState.getString("match_time"));
+
+        ImageView my_image = findViewById(R.id.match_picture);
+        byte[] img =  savedInstanceState.getByteArray("match_picture");
+        if(img.length == 0){
+            currentPhotoPath = "";
+        }else{
+            Bitmap matchPhoto = BitmapFactory.decodeByteArray(img, 0, img.length);
+            my_image.setImageBitmap(matchPhoto);
+            currentPhotoPath = "Camera";
+        }
+
+        myScores = savedInstanceState.getIntegerArrayList("match_score");
+        for(int i = 0; i < myScores.size(); i+= 2){
+            LinearLayout layoutScore = findViewById(R.id.add_match_display_score);
+            TextView newScore = new TextView(this);
+            newScore.setText("Home : " + myScores.get(i) + " - Ext : " + myScores.get(i+1));
+            layoutScore.addView(newScore);
+        }
+
+        RadioButton radioVictory = findViewById(R.id.match_victory);
+        RadioButton radioDraw = findViewById(R.id.match_draw);
+        RadioButton radioDefeat = findViewById(R.id.match_defeat);
+
+        int status = savedInstanceState.getInt("match_status");
+        switch (status){
+            case 1 :
+                radioVictory.toggle();
+                break;
+            case 2 :
+                radioDraw.toggle();
+                break;
+            case 3 :
+                radioDefeat.toggle();
+                break;
+        }
 
     }
 
@@ -227,30 +339,6 @@ public class add_match extends AppCompatActivity implements LocationListener {
                     REQUEST_EXTERNAL_STORAGE
             );
         }
-    }
-
-    private String saveImage(Bitmap finalBitmap, String image_name) {
-
-        String root = Environment.getExternalStorageDirectory().toString();
-        File myDir = new File(root);
-        myDir.mkdirs();
-        String fname = "Image-" + image_name + ".jpg";
-        File file = new File((this
-                .getApplicationContext().getFileStreamPath(fname)
-                .getPath()));
-        if (file.exists()) file.delete();
-        try {
-
-            FileOutputStream out = new FileOutputStream(file);
-            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-            out.flush();
-            out.close();
-            return root + fname;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return "";
     }
 
     public void captureFromCamera(View view) {
