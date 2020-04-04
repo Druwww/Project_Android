@@ -5,11 +5,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.LegendRenderer;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
@@ -40,6 +42,17 @@ public class view_stats extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         graphMyScore = (GraphView) findViewById(R.id.graphScore);
+
+
+        // activate horizontal zooming and scrolling
+        graphMyScore.getViewport().setScalable(true);
+        // activate horizontal scrolling
+        graphMyScore.getViewport().setScrollable(true);
+        // activate horizontal and vertical zooming and scrolling
+        graphMyScore.getViewport().setScalableY(true);
+        // activate vertical scrolling
+        graphMyScore.getViewport().setScrollableY(true);
+        //graphMyScore.setVisibility(View.VISIBLE);
 
         myBDD = new managerSQLI.FeedReaderDbHelper(getApplicationContext());
         display_stats();
@@ -112,6 +125,7 @@ public class view_stats extends AppCompatActivity {
 
         List itemIds = new ArrayList<>();
         ArrayList<Integer> allMyScore = new ArrayList<Integer>();
+        ArrayList<Integer> allOutScore = new ArrayList<Integer>();
 
         while (cursor.moveToNext()) {
             long itemId = cursor.getLong(
@@ -155,6 +169,7 @@ public class view_stats extends AppCompatActivity {
 
             for (int i = 0; i < intScores.size() / 2; i += 2) {
                 allMyScore.add(intScores.get(i));
+                allOutScore.add(intScores.get(i+1));
             }
 
         }
@@ -163,15 +178,27 @@ public class view_stats extends AppCompatActivity {
         try {
 
             DataPoint[] scoreLocal;
+            DataPoint[] scoreExt;
             scoreLocal = new DataPoint[allMyScore.size()];
+            scoreExt = new DataPoint[allOutScore.size()];
 
             for (int i = 0; i < allMyScore.size(); i++) {
                 scoreLocal[i] = new DataPoint(i + 1, allMyScore.get(i));
+                scoreExt[i] = new DataPoint(i+1, allOutScore.get(i));
             }
 
-            LineGraphSeries<DataPoint> series = new LineGraphSeries<>(scoreLocal);
-            graphMyScore.addSeries(series);
-            graphMyScore.setVisibility(View.VISIBLE);
+            LineGraphSeries<DataPoint> seriesHome = new LineGraphSeries<>(scoreLocal);
+            seriesHome.setColor(Color.GREEN);
+            LineGraphSeries<DataPoint> seriesOut = new LineGraphSeries<>(scoreExt);
+            seriesOut.setColor(Color.RED);
+            graphMyScore.addSeries(seriesHome);
+            graphMyScore.addSeries(seriesOut);
+
+            seriesHome.setTitle("Home");
+            seriesOut.setTitle("Ext");
+            graphMyScore.getLegendRenderer().setVisible(true);
+            graphMyScore.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+
 
         } catch (IllegalArgumentException e) {
             //
