@@ -27,4 +27,5 @@
     <string name="add_match_button_add">Ajouter le match</string>
     <string name="view_matchs_button_refreshLastMatchs">Rafraichir</string>
     <string name="view_matchs_button_erraseDataBase">Effacer les matchs</string>
+    <string name="graph_home_score_title">Mes Points</string>
 </resources>
