@@ -132,9 +132,9 @@ public class view_matchs extends AppCompatActivity {
             String matchStatus = cursor.getString(
                     cursor.getColumnIndexOrThrow(managerSQLI.FeedEntry.COLUMN_NAME_MATCH_STATUS));
 
-            if(matchStatus.equals("1")){
+            if(matchStatus.equals("2")){
                 finalTextMatch += "\nResultat : Victoire";
-            }else if(matchStatus.equals("2")){
+            }else if(matchStatus.equals("1")){
                 finalTextMatch += "\nResultat : Nul";
             }else{
                 finalTextMatch += "\nResultat : Defaite";

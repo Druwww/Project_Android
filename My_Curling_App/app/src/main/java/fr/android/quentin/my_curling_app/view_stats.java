@@ -12,6 +12,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.LegendRenderer;
+import com.jjoe64.graphview.ValueDependentColor;
+import com.jjoe64.graphview.series.BarGraphSeries;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
@@ -32,6 +34,7 @@ import java.util.List;
 public class view_stats extends AppCompatActivity {
 
     GraphView graphMyScore;
+    GraphView graphMyStatus;
 
     private managerSQLI.FeedReaderDbHelper myBDD;
 
@@ -42,6 +45,7 @@ public class view_stats extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         graphMyScore = (GraphView) findViewById(R.id.graphScore);
+        graphMyStatus = (GraphView) findViewById(R.id.graphMatchStatus);
 
 
         // activate horizontal zooming and scrolling
@@ -49,10 +53,6 @@ public class view_stats extends AppCompatActivity {
         // activate horizontal scrolling
         graphMyScore.getViewport().setScrollable(true);
         // activate horizontal and vertical zooming and scrolling
-        graphMyScore.getViewport().setScalableY(true);
-        // activate vertical scrolling
-        graphMyScore.getViewport().setScrollableY(true);
-        //graphMyScore.setVisibility(View.VISIBLE);
 
         myBDD = new managerSQLI.FeedReaderDbHelper(getApplicationContext());
         display_stats();
@@ -127,6 +127,10 @@ public class view_stats extends AppCompatActivity {
         ArrayList<Integer> allMyScore = new ArrayList<Integer>();
         ArrayList<Integer> allOutScore = new ArrayList<Integer>();
 
+        int numberVictory = 0;
+        int numberDraw = 0;
+        int numberDefeat = 0;
+
         while (cursor.moveToNext()) {
             long itemId = cursor.getLong(
                     cursor.getColumnIndexOrThrow(managerSQLI.FeedEntry._ID));
@@ -147,14 +151,14 @@ public class view_stats extends AppCompatActivity {
             String matchStatus = cursor.getString(
                     cursor.getColumnIndexOrThrow(managerSQLI.FeedEntry.COLUMN_NAME_MATCH_STATUS));
 
-            /*
-            if(matchStatus.equals("1")){
-                finalTextMatch += "\nResultat : Victoire";
-            }else if(matchStatus.equals("2")){
-                finalTextMatch += "\nResultat : Nul";
+
+            if(matchStatus.equals("2")){
+                numberVictory++;
+            }else if(matchStatus.equals("1")){
+                numberDraw++;
             }else{
-                finalTextMatch += "\nResultat : Defaite";
-            }*/
+                numberDefeat++;
+            }
 
             byte[] scores = cursor.getBlob(
                     cursor.getColumnIndexOrThrow(managerSQLI.FeedEntry.COLUMN_NAME_MATCH_SCORE));
@@ -177,6 +181,7 @@ public class view_stats extends AppCompatActivity {
 
         try {
 
+            //Graph score
             DataPoint[] scoreLocal;
             DataPoint[] scoreExt;
             scoreLocal = new DataPoint[allMyScore.size()];
@@ -199,6 +204,22 @@ public class view_stats extends AppCompatActivity {
             graphMyScore.getLegendRenderer().setVisible(true);
             graphMyScore.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
 
+            //Graph status
+            BarGraphSeries<DataPoint> seriesStatus = new BarGraphSeries<>(new DataPoint[] {
+                    new DataPoint(1, numberVictory),
+                    new DataPoint(2, numberDraw),
+                    new DataPoint(3, numberDefeat)
+            });
+            graphMyStatus.addSeries(seriesStatus);
+            seriesStatus.setValueDependentColor(new ValueDependentColor<DataPoint>() {
+                @Override
+                public int get(DataPoint data) {
+                    return Color.rgb((int) data.getX()*255/4, (int) Math.abs(data.getY()*255/6), 100);
+                }
+            });
+            seriesStatus.setSpacing(50);
+            seriesStatus.setDrawValuesOnTop(true);
+            seriesStatus.setValuesOnTopColor(Color.BLUE);
 
         } catch (IllegalArgumentException e) {
             //
