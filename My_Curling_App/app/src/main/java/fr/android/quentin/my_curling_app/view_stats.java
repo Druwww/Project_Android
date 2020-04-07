@@ -28,6 +28,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,7 +58,11 @@ public class view_stats extends AppCompatActivity {
         // activate horizontal and vertical zooming and scrolling
 
         myBDD = new managerSQLI.FeedReaderDbHelper(getApplicationContext());
-        display_stats();
+        try {
+            display_stats();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -90,7 +97,7 @@ public class view_stats extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void display_stats() {
+    public void display_stats() throws IOException {
         SQLiteDatabase db = myBDD.getReadableDatabase();
 
 // Define a projection that specifies which columns from the database
@@ -163,17 +170,22 @@ public class view_stats extends AppCompatActivity {
             byte[] scores = cursor.getBlob(
                     cursor.getColumnIndexOrThrow(managerSQLI.FeedEntry.COLUMN_NAME_MATCH_SCORE));
 
-            ArrayList<Integer> intScores = new ArrayList<Integer>();
-            int b = 0;
-            for (int i = 0; i < scores.length; i += 4) {
-                byte[] lotOfBytes = new byte[4];
-                intScores.add(scores[i] * 1000 + scores[i + 1] * 100 + scores[i + 2] * 10 + scores[i + 3]);
-                b++;
-            }
+            ArrayList<String> intScores = new ArrayList<>();
 
-            for (int i = 0; i < intScores.size() / 2; i += 2) {
-                allMyScore.add(intScores.get(i));
-                allOutScore.add(intScores.get(i+1));
+            ByteArrayInputStream bais = new ByteArrayInputStream(scores);
+            DataInputStream in = new DataInputStream(bais);
+            //true = pair
+            boolean i = true;
+            while (in.available() > 0) {
+                String element = in.readUTF();
+                intScores.add(element);
+                if(i){
+                    allMyScore.add(Integer.parseInt(element));
+
+                }else{
+                    allOutScore.add(Integer.parseInt(element));
+                }
+                i = !i;
             }
 
         }
