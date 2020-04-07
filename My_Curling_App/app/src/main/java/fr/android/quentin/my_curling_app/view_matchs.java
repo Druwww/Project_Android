@@ -22,7 +22,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -74,7 +76,7 @@ public class view_matchs extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void launchDisplayMatchs(View view){
+    public void launchDisplayMatchs(View view) throws IOException {
         SQLiteDatabase db = myBDD.getReadableDatabase();
 
 // Define a projection that specifies which columns from the database
@@ -132,9 +134,9 @@ public class view_matchs extends AppCompatActivity {
             String matchStatus = cursor.getString(
                     cursor.getColumnIndexOrThrow(managerSQLI.FeedEntry.COLUMN_NAME_MATCH_STATUS));
 
-            if(matchStatus.equals("1")){
+            if(matchStatus.equals("2")){
                 finalTextMatch += "\nResultat : Victoire";
-            }else if(matchStatus.equals("2")){
+            }else if(matchStatus.equals("1")){
                 finalTextMatch += "\nResultat : Nul";
             }else{
                 finalTextMatch += "\nResultat : Defaite";
@@ -150,18 +152,32 @@ public class view_matchs extends AppCompatActivity {
             byte[] scores = cursor.getBlob(
                     cursor.getColumnIndexOrThrow(managerSQLI.FeedEntry.COLUMN_NAME_MATCH_SCORE));
 
-            ArrayList<Integer> intScores = new ArrayList<Integer>();
-            int b = 0;
-            for(int i = 0;i < scores.length ;i+= 4){
-                byte[] lotOfBytes = new byte[4];
-                intScores.add(scores[i] * 1000 +  scores[i+1] * 100 + scores[i+2] * 10 + scores[i+3]);
-                b++;
+            ArrayList<String> intScores = new ArrayList<>();
+
+            ByteArrayInputStream bais = new ByteArrayInputStream(scores);
+            DataInputStream in = new DataInputStream(bais);
+            finalTextMatch +="\n\nScores : ";
+            //true = pair
+            boolean i = true;
+            int j = 1;
+            while (in.available() > 0) {
+                String element = in.readUTF();
+                intScores.add(element);
+                if(i){
+                    finalTextMatch += "\nManche " + j + " : Home : " + element;
+                    j++;
+                }else{
+                    finalTextMatch += " - " + element + " Ext";
+                }
+                System.out.println(element);
+                i = !i;
             }
 
-            finalTextMatch +="\n\nScores : ";
+
+/*
             for(int i = 0;i < intScores.size() / 2 ;i += 2){
                 finalTextMatch += "\nManche " + ((i / 2 )+ 1) + " : Home : " + intScores.get(i) + " - " + intScores.get(i+1) + " Ext";
-            }
+            }*/
             finalTextMatch += "\n\n";
 
             //affichage final
@@ -175,7 +191,7 @@ public class view_matchs extends AppCompatActivity {
         cursor.close();
     }
 
-    public void erraseDataBase(View view) {
+    public void erraseDataBase(View view) throws IOException {
 
         SQLiteDatabase db = myBDD.getReadableDatabase();
 

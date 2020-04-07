@@ -16,11 +16,13 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -40,7 +42,10 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -51,6 +56,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -399,7 +405,8 @@ public class add_match extends AppCompatActivity implements LocationListener {
     }
 
 
-    public void save_match(View view) throws ParseException {
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void save_match(View view) throws ParseException, IOException {
 
         Snackbar errorPopUp;
 
@@ -471,6 +478,8 @@ public class add_match extends AppCompatActivity implements LocationListener {
             return;
         }
 
+        ///V1 pas ouf
+        /*
         //Convertie nos scores en chaine de byte
         int[]myB = new int[myScores.size()];
         for(int i =0; i < myScores.size(); i++){
@@ -479,8 +488,25 @@ public class add_match extends AppCompatActivity implements LocationListener {
         ByteBuffer byteBuffer = ByteBuffer.allocate(myScores.size()*4);
         IntBuffer intBuffer = byteBuffer.asIntBuffer();
         intBuffer.put(myB);
-        byte[] arrayByte = byteBuffer.array();
+        byte[] arrayByte = byteBuffer.array();*/
 
+        ///V2
+        List<Integer> list = myScores;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        DataOutputStream out = new DataOutputStream(baos);
+        for (int element : list) {
+            out.writeUTF(Integer.toString(element));
+        }
+        byte[] arrayByte = baos.toByteArray();
+
+/*
+        ByteArrayInputStream bais = new ByteArrayInputStream(arrayByte);
+        DataInputStream in = new DataInputStream(bais);
+        while (in.available() > 0) {
+            String element = in.readUTF();
+            System.out.println(element);
+        }
+*/
         SQLiteDatabase db = myBDD.getWritableDatabase();
 
 // Create a new map of values, where column names are the keys

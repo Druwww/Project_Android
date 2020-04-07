@@ -36,4 +36,9 @@
     <string name="add_match_button_add">Ajouter le match</string>
     <string name="view_matchs_button_refreshLastMatchs">Rafraichir</string>
     <string name="view_matchs_button_erraseDataBase">Effacer les matchs</string>
+    <string name="graph_home_score_title">Mes Points</string>
+    <string name="graph_home_status_title">Mes résultats</string>
+    <string name="graph_home_status_victory">Victoire</string>
+    <string name="graph_home_status_draw" >Egalité</string>
+    <string name="graph_home_status_defeat">Défaite</string>
 </resources>

@@ -34,4 +34,8 @@
     <string name="add_match_button_add">Add the Match</string>
     <string name="view_matchs_button_refreshLastMatchs">Refresh</string>
     <string name="view_matchs_button_erraseDataBase">Erase Matchs</string>
+    <string name="graph_home_score_title">My Points</string>
+    <string name="graph_home_status_victory">Victory</string>
+    <string name="graph_home_status_draw">Draw</string>
+    <string name="graph_home_status_defeat">Defeat</string>
 </resources>
