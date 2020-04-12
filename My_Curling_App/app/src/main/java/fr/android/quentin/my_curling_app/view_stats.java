@@ -34,6 +34,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+//Source des graph : https://github.com/jjoe64/GraphView
+
 public class view_stats extends AppCompatActivity {
 
     GraphView graphMyScore;
